@@ -48,7 +48,11 @@
 
 ;;; Auth source interface and functions
 
-(defvar auth-source-xoauth2-creds nil
+(defgroup auth-source-xoauth2 nil
+  "Customization group for `auth-source-xoauth2'."
+  :group 'communication)
+
+(defcustom auth-source-xoauth2-creds nil
   "A property list containing values for the following XOAuth2 keys:
 :token-url, :client-id, :client-secret, and :refresh-token.
 
@@ -108,13 +112,19 @@ This should get you all the values but for the refresh token.  For that one:
 5. Once you give approval, the refresh token will be printed by the tool in
    the terminal.  You should now have all the required values (the
    :token-url value should be
-   \"https://accounts.google.com/o/oauth2/token\").")
+   \"https://accounts.google.com/o/oauth2/token\")."
+  :type '(choice (const nil)
+                 (plist :value-type string :options
+                        '(:token-url :client-id :client-secret :refresh-token))
+                 file
+                 function))
 
-(defvar auth-source-xoauth2-use-curl nil
+(defcustom auth-source-xoauth2-use-curl nil
   "Whether to use cURL instead of Emacs' built-in `url-retrieve-synchronously'.
 If, for whatever reason, the XOAuth2 tokens can not be retrieved using
 Emacs' own `url-retrieve-synchronously', setting this variable to t
-will make the package try to call cURL instead.")
+will make the package try to call cURL instead."
+  :type '(choice (const nil) (const t)))
 
 (cl-defun auth-source-xoauth2-search (&rest spec
                                             &key backend type host user port
